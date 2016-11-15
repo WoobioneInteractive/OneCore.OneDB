@@ -7,6 +7,9 @@
  */
 class OneDB implements IPlugin {
 	
-	
-	
+	public function Dependencies()
+	{
+
+	}
+
 }
