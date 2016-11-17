@@ -23,4 +23,17 @@ class DatabaseRepository implements IRepository
 	{
 		return $this->connection;
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function LoadByID()
+	{
+		// TODO: Implement LoadByID() method.
+	}
+
+	public function LoadAll()
+	{
+		// TODO: Implement LoadAll() method.
+	}
 }
