@@ -8,12 +8,19 @@ class DatabaseRepository implements IRepository
 	private $connection = null;
 
 	/**
+	 * @var IModelResolver
+	 */
+	private $modelResolver = null;
+
+	/**
 	 * DatabaseRepository constructor.
 	 * @param IDatabaseConnection $connection
+	 * @param IModelResolver $modelResolver
 	 */
-	public function __construct(IDatabaseConnection $connection)
+	public function __construct(IDatabaseConnection $connection, IModelResolver $modelResolver)
 	{
 		$this->connection = $connection;
+		$this->modelResolver = $modelResolver;
 	}
 
 	/**
@@ -25,15 +32,28 @@ class DatabaseRepository implements IRepository
 	}
 
 	/**
-	 * @return mixed
+	 * @param string $model
+	 * @param int $id
+	 * @throws Exception
 	 */
-	public function LoadByID()
+	public function FindByID($model, $id)
 	{
-		// TODO: Implement LoadByID() method.
+		throw new Exception('Not implemented');
 	}
 
-	public function LoadAll()
+	/**
+	 * @throws Exception
+	 */
+	public function FindOne($model)
 	{
-		// TODO: Implement LoadAll() method.
+		throw new Exception('Not implemented');
+	}
+
+	/**
+	 * @param string $model
+	 */
+	public function FindAll($model)
+	{
+		return $this->modelResolver->GetMapping($model);
 	}
 }

@@ -3,9 +3,20 @@
 interface IRepository
 {
 	/**
+	 * Load type model by id
 	 * @return mixed
 	 */
-	public function LoadByID();
+	public function FindByID($model, $id);
 
-	public function LoadAll();
+	/**
+	 * @return mixed
+	 */
+	public function FindOne($model);
+
+	/**
+	 * Load all of type model
+	 * @param string $model Get by using ModelName::Model()
+	 * @return array
+	 */
+	public function FindAll($model);
 }

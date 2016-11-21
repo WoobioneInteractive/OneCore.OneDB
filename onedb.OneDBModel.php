@@ -3,21 +3,17 @@
 abstract class OneDBModel
 {
 	/**
-	 * @var array
-	 */
-	protected $mapping = [];
-
-	/**
 	 * @var int
 	 */
 	public $ID;
 
 	/**
-	 * @return OneDBMapping
+	 * Get derived model name
+	 * @return string
 	 */
-	public final function _GetMapping()
+	public static final function Model()
 	{
-		return new OneDBMapping($this->mapping);
+		return static::class;
 	}
 
 	/**
@@ -27,17 +23,6 @@ abstract class OneDBModel
 	public static final function Create()
 	{
 		// Get derived class
-		$class = static::class;
-
-		return new $class;
-	}
-
-	/**
-	 * Load single object by ID
-	 * @param int $id
-	 */
-	public static final function LoadByID($id)
-	{
-
+		return new ${self::Model()};
 	}
 }

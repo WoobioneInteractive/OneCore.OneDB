@@ -7,7 +7,7 @@
  */
 class OneDB implements IPlugin
 {
-	// Configuration option
+	// Configuration options
 	const Config_DatabaseType = 'onedb.databaseType';
 	const Config_Host = 'onedb.host';
 	const Config_Database = 'onedb.database';
@@ -15,6 +15,10 @@ class OneDB implements IPlugin
 	const Config_Password = 'onedb.password';
 	const Config_ModelFileDirectory = 'onedb.modelFileDirectory';
 	const Config_ModelFilePattern = 'onedb.modelFilePattern';
+	const Config_MappingFileDirectory = 'onedb.mappingFileDirectory';
+	const Config_MappingFilePattern = 'onedb.mappingFilePattern';
+	const Config_TablePrefix = 'onedb.tablePrefix';
+	const Config_AutoMap = 'onedb.autoMap';
 
 	// Database types
 	const DB_MySQL = 'MySQL';
@@ -24,7 +28,9 @@ class OneDB implements IPlugin
 	const DefaultDatabaseType = self::DB_MySQL;
 	const DefaultHost = 'localhost';
 	const DefaultModelFileDirectory = 'Models';
-	const DefaultModelFilePattern = '{class}';
+	const DefaultModelFilePattern = 'model.{class}';
+	const DefaultMappingFileDirectory = 'Models/Mappings';
+	const DefaultMappingFilePattern = 'mapping.{class}';
 	const RepositoryInterface = 'IRepository';
 	const DatabaseConnectionClassSuffix = 'Connection';
 	const DatabaseConnectionInterface = 'IDatabaseConnection';
@@ -45,17 +51,20 @@ class OneDB implements IPlugin
 	 * @param IFileAutoLoader $autoLoader
 	 * @param IPluginLoader $pluginLoader
 	 */
-	public function __construct(IConfigHandler $configHandler, IFileAutoLoader $autoLoader, IPluginLoader $pluginLoader, DependencyInjector $di)
+	public function __construct(IConfigHandler $configHandler, IFileAutoLoader $autoLoader, IPluginLoader $pluginLoader, DependencyInjector $di, IModelResolver $modelResolver)
 	{
 		$this->configHandler = $configHandler;
 
-		// Register autoloader for app models
+		// Register autoloader for app models and mappings
 		$autoLoader->AddFromDirectory(
 			$pluginLoader->GetApplicationDirectory() . $configHandler->Get(self::Config_ModelFileDirectory, self::DefaultModelFileDirectory),
 			$configHandler->Get(self::Config_ModelFilePattern, self::DefaultModelFilePattern));
+		$autoLoader->AddFromDirectory(
+			$pluginLoader->GetApplicationDirectory() . $configHandler->Get(self::Config_MappingFileDirectory, self::DefaultMappingFileDirectory),
+			$configHandler->Get(self::Config_MappingFilePattern, self::DefaultMappingFilePattern));
 
 		// Initialize main repository
-		$this->repository = new DatabaseRepository($this->getMainConnection());
+		$this->repository = new DatabaseRepository($this->getMainConnection(), $modelResolver);
 		$di->AddMapping(new DependencyMappingFromArray([
 			self::RepositoryInterface => [
 				DependencyInjector::Mapping_RemoteInstance => $this->repository
