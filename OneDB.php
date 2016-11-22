@@ -34,6 +34,8 @@ class OneDB implements IPlugin
 	const RepositoryInterface = 'IRepository';
 	const DatabaseConnectionClassSuffix = 'Connection';
 	const DatabaseConnectionInterface = 'IDatabaseConnection';
+	const ModelBaseClass = 'OneDBModel';
+	const MappingBaseClass = 'OneDBMapping';
 
 	/**
 	 * @var IConfigHandler
@@ -64,7 +66,7 @@ class OneDB implements IPlugin
 			$configHandler->Get(self::Config_MappingFilePattern, self::DefaultMappingFilePattern));
 
 		// Initialize main repository
-		$this->repository = new DatabaseRepository($this->getMainConnection(), $modelResolver);
+		$this->repository = new DatabaseRepository($this->getMainConnection(), $this->configHandler->Get(self::Config_TablePrefix, ''), $this->configHandler->Get(self::Config_AutoMap, false));
 		$di->AddMapping(new DependencyMappingFromArray([
 			self::RepositoryInterface => [
 				DependencyInjector::Mapping_RemoteInstance => $this->repository

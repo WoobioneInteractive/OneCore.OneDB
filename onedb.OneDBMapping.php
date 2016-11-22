@@ -16,11 +16,6 @@ class OneDBMapping
 	protected $mappingForModel;
 
 	/**
-	 * @var string
-	 */
-	protected $tablePrefix;
-
-	/**
 	 * @var array
 	 */
 	protected $options = [];
@@ -35,10 +30,9 @@ class OneDBMapping
 	 * @param string $modelName
 	 * @param string $tablePrefix
 	 */
-	public final function __construct($modelName = null, $tablePrefix = '')
+	public final function __construct($modelName = null)
 	{
 		$this->mappingForModel = $modelName ?: str_ireplace('mapping', '', static::class);
-		$this->tablePrefix = $tablePrefix;
 	}
 
 	/**
@@ -62,7 +56,7 @@ class OneDBMapping
 	 */
 	public function GetTableName()
 	{
-		return $this->tablePrefix . $this->GetOption(self::Opt_TableName, strtolower($this->mappingForModel) . 's');
+		return $this->GetOption(self::Opt_TableName, strtolower($this->mappingForModel) . 's');
 	}
 
 	/**
@@ -79,17 +73,22 @@ class OneDBMapping
 	}
 
 	/**
-	 * TODO OneDBModel should come from somewhere, not be inline
+	 * Map model automatically from all its properties
+	 * @throws OneDBMappingException
 	 */
 	public function AutoMap()
 	{
 		if (!class_exists($this->mappingForModel))
 			throw new OneDBMappingException("Failed to automap model '{$this->mappingForModel}' - no such class");
 
-		if (!is_subclass_of($this->mappingForModel, 'OneDBModel'))
-			throw new OneDBMappingException("Failed to automap model '{$this->mappingForModel}' - corresponding class does not extend 'OneDBModel'");
+		if (!is_subclass_of($this->mappingForModel, OneDB::ModelBaseClass))
+			throw new OneDBMappingException("Failed to automap model '{$this->mappingForModel}' - corresponding class does not extend '" . OneDB::ModelBaseClass . "'");
 
-		var_dump(get_class_vars($this->mappingForModel));
+		foreach (array_keys(get_class_vars($this->mappingForModel)) as $propertyName) {
+			$this->properties[$propertyName] = $this->GetPropertyMapping($propertyName, [
+				self::Map_Column => $propertyName
+			]);
+		}
 	}
 }
 
