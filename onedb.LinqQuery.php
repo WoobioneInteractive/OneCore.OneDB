@@ -8,19 +8,14 @@ class LinqQuery implements IQuery
 	private $modelName;
 
 	/**
-	 * @var IModelResolver
+	 * @var IModelResolver[]
 	 */
-	private $modelResolver;
+	private $modelResolvers = [];
 
 	/**
 	 * @var string
 	 */
 	private $tablePrefix = '';
-
-	/**
-	 * @var bool
-	 */
-	private $autoMap = false;
 
 	/**
 	 * LinqQuery constructor.
@@ -29,7 +24,7 @@ class LinqQuery implements IQuery
 	public function __construct($modelName)
 	{
 		$this->modelName = $modelName;
-		$this->modelResolver = new ModelResolver();
+		$this->modelResolvers[$modelName] = new ModelResolver($modelName);
 	}
 
 	/**
@@ -40,15 +35,6 @@ class LinqQuery implements IQuery
 	{
 		$this->tablePrefix = $tablePrefix;
 		return $this;
-	}
-
-	/**
-	 * @param bool $doAutoMap
-	 */
-	public function AutoMap($doAutoMap)
-	{
-		$this->autoMap = $doAutoMap;
-		$this->modelResolver->AutoMap($doAutoMap);
 	}
 
 	/**

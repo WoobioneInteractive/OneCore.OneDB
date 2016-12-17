@@ -3,37 +3,36 @@
 class ModelResolver implements IModelResolver
 {
 	/**
+	 * @var string|OneDBModel
+	 */
+	private $model;
+
+	/**
 	 * @var bool
 	 */
 	private $autoMap;
 
 	/**
 	 * ModelResolver constructor.
-	 * TODO Configure on construct
+	 * @var string $modelName
 	 */
-	public function __construct($autoMap = false)
+	public function __construct($model)
 	{
-		$this->autoMap = $autoMap;
-	}
-
-	/**
-	 * @param bool $autoMap
-	 */
-	public function AutoMap($autoMap)
-	{
-		$this->autoMap = $autoMap;
+		$this->model = $model;
 	}
 
 	/**
 	 * @param string|OneDBModel $model
+	 * @return array
+	 * @throws ModelResolverException
 	 */
-	public function GetMapping($model)
+	public function GetMapping()
 	{
-		if (!is_subclass_of($model, OneDB::ModelBaseClass))
-			throw new ModelResolverException("Failed to resolve model '$model' - no such class which implements '" . OneDB::ModelBaseClass . "' exists");
+		if (!is_subclass_of($this->modelName, OneDB::ModelBaseClass))
+			throw new ModelResolverException("Failed to resolve model '{$this->model}' - no such class which implements '" . OneDB::ModelBaseClass . "' exists");
 
-		if (is_object($model))
-			$model = $model::Model();
+		if (is_object($this->model))
+			$model = '';//($this->model)::Model();
 
 		$modelMapping = $model . 'Mapping';
 

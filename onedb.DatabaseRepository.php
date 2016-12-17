@@ -36,9 +36,7 @@ class DatabaseRepository implements IRepository
 	 */
 	public function getNewLinq($model)
 	{
-		return (new LinqQuery($model))
-			->SetTablePrefix($this->tablePrefix)
-			->AutoMap($this->autoMap);
+		return (new LinqQuery($model))->SetTablePrefix($this->tablePrefix);
 	}
 
 	/**
